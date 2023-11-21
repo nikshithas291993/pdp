@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getProductById } from "./api-helper/frontend/util.js";
+import { getProductById } from "../../container/src/api-helper/frontend/util.js";
 import ProductDetails from "./component/product/ProductDetail.js"
 export default function Root(props) {
   const productId = props.productId; // Access productId as a prop
