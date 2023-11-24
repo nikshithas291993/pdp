@@ -1,7 +1,43 @@
-import { Box, Button, Card, CardMedia, Divider, Grid, List, ListItem, Paper, Skeleton, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Button, Card, CardMedia, Divider, Grid, List, ListItem, Paper, Skeleton, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import React, { Fragment, useEffect, useState } from "react";
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import AddIcon  from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
+import { addItemToCart } from "../../../../container/src/api-helper/frontend/util";
+
 const ProductDetails = ({ data  }) =>{
+  const [count, setCount] = useState(0);
+  const IncNum = () => {
+    setCount(count + 1);
+  };
+  const DecNum = () => {
+    if (count > 0) setCount(count - 1);
+    else {
+      setCount(0);
+    }
+  };
+  const handleAddItemToCart = () => {
+    const productId = data.productId;
+    const quantity = count;
+    /*const items = [
+      {
+        productId: productId,
+        quantity : quantity,
+      }
+    ];*/
+    //console.log(items);
+    addItemToCart(productId,quantity).then((value) =>{
+      console.log(value);
+      if(value.cartId){
+          window.location = '/cart';
+      }else{
+        alert("Error adding to cart");
+      }
+    })
+    .then(() => console.log("success"))
+    .catch((err) =>console.log(err));
+  };
+
     return(
       <>
       <Grid
@@ -54,13 +90,30 @@ const ProductDetails = ({ data  }) =>{
           &#8377;{data.listPrice}
             </Typography>
           <Divider sx={{ mb: 2 }} />
-
+          <div className="main_div">
+             <div className="center_div">
+             <Typography textAlign='center'>Quantity</Typography>
+                <Typography textAlign='center'>{count}</Typography>
+                  <div className="btn_div" style={{display:'flex', justifyContent:'center'}}>
+                    <Tooltip title="Increment">
+                      <Button onClick={IncNum}>
+                        <AddIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Decrement">
+                      <Button onClick={DecNum}>
+                        <RemoveIcon />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
           <Box display='flex' justifyContent={'center'} my>
               <Button
                 variant='contained'
                 color='error'
                 startIcon={<AssignmentTurnedInIcon />}
-                
+                onClick={handleAddItemToCart}
               >
                 Add To Cart
               </Button>
